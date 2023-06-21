@@ -117,7 +117,7 @@ router.get("/:id", async (req, res) => {
     }
 })
 
-//recupera tutti i post 
+//recupera tutti i post di un autore
 router.get("/timeline/:userId", async (req, res) => {
     try {
       const userPosts = await Post.find({ userId: req.params.userId });
@@ -135,5 +135,23 @@ router.get("/timeline/:userId", async (req, res) => {
         });
     }
 });
+
+//recupera tutti i post 
+router.get("/", async (req, res)=>{
+    try {
+        const posts = await Post.find()
+        res.status(200).send({
+            statusCode: 200,
+            message: "Tutti i post trovati con successo",
+            posts,
+        })
+    } catch (error) {
+        res.status(500).send({
+            error,
+            message: "Errore nel server",
+            statusCode: 500
+        })
+    }
+})
 
 module.exports = router;
