@@ -8,7 +8,12 @@ const morgan = require('morgan');
 
 const userRoute = require("./routes/users.js")
 const authRoute = require("./routes/auth.js")
-//const postRoute = require("./routes/posts.js")
+const postRoute = require("./routes/posts.js")
+
+//middleware
+app.use(express.json())
+app.use(helmet());
+app.use(morgan('common'));
 
 dotenv.config();
 
@@ -24,10 +29,6 @@ db.once('open', () => {
   console.log('Server DB connesso correttamente');
 });
 
-//middleware
-app.use(express.json())
-app.use(helmet());
-app.use(morgan('common'));
 
 app.use("/api/users", userRoute)
 app.use("/api/auth", authRoute)
