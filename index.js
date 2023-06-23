@@ -5,10 +5,14 @@ const PORT = 8800;
 const dotenv = require("dotenv");
 const helmet = require('helmet');
 const morgan = require('morgan');
+const cors = require('cors');
+
 
 const userRoute = require("./routes/users.js")
 const authRoute = require("./routes/auth.js")
 const postRoute = require("./routes/posts.js")
+
+app.use(cors());
 
 //middleware
 app.use(express.json())
