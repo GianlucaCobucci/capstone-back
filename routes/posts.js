@@ -1,5 +1,6 @@
 const router = require("express").Router()
 const Post = require("../models/Post")
+const User = require("../models/User")
 
 //crea un post
 router.post("/", async (req, res) => {
@@ -120,14 +121,14 @@ router.get("/:id", async (req, res) => {
 //recupera tutti i post di un autore
 router.get("/timeline/:userId", async (req, res) => {
     try {
-      const userPosts = await Post.find({ userId: req.params.userId });
-      res.status(200).send({
-        statusCode: 200,
-        message: "Post trovati con successo",
-        userPosts,
-      });
+        const userPosts = await Post.find({ userId: req.params.userId });
+        res.status(200).send({
+            statusCode: 200,
+            message: "Post trovati con successo",
+            userPosts,
+        });
     } catch (error) {
-        console.error(error); 
+        console.error(error);
         res.status(500).send({
             error,
             message: "Errore nel server",
@@ -137,7 +138,7 @@ router.get("/timeline/:userId", async (req, res) => {
 });
 
 //recupera tutti i post 
-router.get("/", async (req, res)=>{
+router.get("/", async (req, res) => {
     try {
         const posts = await Post.find()
         res.status(200).send({
@@ -153,5 +154,24 @@ router.get("/", async (req, res)=>{
         })
     }
 })
+
+router.get("/profile/:username", async (req, res) => {
+    try {
+        const user = await User.findOne({ username: req.params.username })
+        const posts = await Post.find({ userId: user.id });
+        res.status(200).send({
+            message: "Profilo utente trovato con successo",
+            posts,
+            statusCode: 200
+        })
+
+    } catch (error) {
+        res.status(500).send({
+            error,
+            message: "Errore nel server",
+            statusCode: 500
+        });
+    }
+});
 
 module.exports = router;
