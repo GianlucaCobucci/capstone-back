@@ -63,9 +63,14 @@ router.delete('/:id', async (req, res) => {
 })
 
 //get utente
-router.get("/:id", async (req, res) => {
+router.get("/", async (req, res) => {
+    const userId = req.query.userId
+    const username = req.query.username
+
     try {
-        const user = await User.findById(req.params.id)
+        const user = userId
+            ? await User.findById(userId)
+            : await User.findOne({ username: username })
         res.status(200).send({
             message: "L'utente è stato trovato con successo",
             statusCode: 200,
@@ -81,22 +86,22 @@ router.get("/:id", async (req, res) => {
 })
 
 //get tutti utenti
-router.get("/", async (req, res) => {
+router.get("/users", async (req, res) => {
     try {
-        const users = await User.find()
+        const users = await User.find();
         res.status(200).send({
-            message: "Tutti i utenti trovati con successo",
+            message: "Tutti gli utenti trovati con successo",
             statusCode: 200,
-            users
-        })
+            users,
+        });
     } catch (error) {
         res.status(500).send({
             error,
             message: "Errore nel server",
-            statusCode: 500
-        })
+            statusCode: 500,
+        });
     }
-})
+});
 
 //follow utente
 router.put("/:id/follow", async (req, res) => {

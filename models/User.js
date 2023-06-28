@@ -47,13 +47,9 @@ const UserSchema = new mongoose.Schema({
         type: String, 
         max: 50
     },
-    from: {
+    deck: {
         type: String, 
         max: 50
-    },
-    relationship: {
-        type: Number, 
-        enum: [1,2,3]
     },
 },{timestamps: true, strict: true});
 
