@@ -8,7 +8,6 @@ const morgan = require('morgan');
 const cors = require('cors');
 const multer = require('multer');
 
-
 const userRoute = require("./routes/users.js")
 const authRoute = require("./routes/auth.js")
 const postRoute = require("./routes/posts.js")
@@ -21,25 +20,27 @@ app.use(helmet());
 app.use(morgan('common'));
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) =>{
-    cb(null, "public/assets")
+  destination: (req, file, cb) => {
+    cb(null, "public/assets");
   },
   filename: (req, file, cb) => {
-    cb(null, file.originalname)
-  }
+    cb(null, file.originalname); 
+  },
 });
 
-const upload = multer({storage})
+const upload = multer({ storage });
 app.post('/api/upload', upload.single("file"), (req, res) => {
   try {
     return res.status(200).send({
       message: "File caricato con successo",
       statusCode: 200
-    })
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-})
+});
+
+
 
 dotenv.config();
 
