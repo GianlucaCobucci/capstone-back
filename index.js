@@ -7,6 +7,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const cors = require('cors');
 const multer = require('multer');
+const path = require("path")
 
 const userRoute = require("./routes/users.js")
 const authRoute = require("./routes/auth.js")
@@ -14,32 +15,40 @@ const postRoute = require("./routes/posts.js")
 
 app.use(cors());
 
+app.use('/public/assets', express.static(path.join(__dirname, "./public/assets")));//route per accedere ai file
+
 //middleware
 app.use(express.json())
-app.use(helmet());
-app.use(morgan('common'));
+//app.use(helmet());//aggiunge o rimuove headers 
+//app.use(morgan('common'));//registra richieste http insieme ad altre info, utile per debug
+
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "public/assets");
   },
   filename: (req, file, cb) => {
-    cb(null, file.originalname); 
+    cb(null, file.originalname);
   },
 });
 
 const upload = multer({ storage });
-app.post('/api/upload', upload.single("file"), (req, res) => {
+app.post('/api/upload', upload.single("img"), async (req, res) => {
+  const URL = req.protocol + "://" + req.get("host")
   try {
-    return res.status(200).send({
+    const imgUrl = req.file.filename
+    /* res.status(200).send({
       message: "File caricato con successo",
-      statusCode: 200
-    });
+      statusCode: 200,
+      imgUrl: `${URL}/public/assets/${imgUrl}`
+    }); */
+    res.status(200).json({
+      img: `${URL}/public/assets/${imgUrl}`
+    })
   } catch (error) {
     console.log(error);
   }
 });
-
 
 
 dotenv.config();
@@ -62,6 +71,6 @@ app.use("/api/auth", authRoute)
 app.use("/api/posts", postRoute)
 
 app.listen(PORT, () => {
-    console.log(`Server avviato sulla porta ${PORT}`);
-  });
+  console.log(`Server avviato sulla porta ${PORT}`);
+});
 ;
