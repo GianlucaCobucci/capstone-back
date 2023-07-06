@@ -19,8 +19,8 @@ app.use('/public/assets', express.static(path.join(__dirname, "./public/assets")
 
 //middleware
 app.use(express.json())
-//app.use(helmet());//aggiunge o rimuove headers 
-//app.use(morgan('common'));//registra richieste http insieme ad altre info, utile per debug
+app.use(helmet());//aggiunge o rimuove headers 
+app.use(morgan('common'));//registra richieste http insieme ad altre info, utile per debug
 
 
 const storage = multer.diskStorage({
@@ -37,11 +37,6 @@ app.post('/api/upload', upload.single("img"), async (req, res) => {
   const URL = req.protocol + "://" + req.get("host")
   try {
     const imgUrl = req.file.filename
-    /* res.status(200).send({
-      message: "File caricato con successo",
-      statusCode: 200,
-      imgUrl: `${URL}/public/assets/${imgUrl}`
-    }); */
     res.status(200).json({
       img: `${URL}/public/assets/${imgUrl}`
     })

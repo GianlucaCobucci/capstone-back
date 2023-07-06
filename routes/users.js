@@ -103,6 +103,39 @@ router.get("/users", async (req, res) => {
     }
 });
 
+//get amici
+router.get("/friends/:userId", async (req, res) => {
+    try {
+        const user = await User.findById(req.params.userId);
+        if (!user) {
+            return res.status(404).send({
+                message: "Utente non trovato",
+                statusCode: 404,
+            });
+        }
+        //se l'utente ha degli amici, li cerchiamo tutti in una volta nel database 
+        //utilizzando $in di MongoDB. Se "followings" non esiste o è vuoto, 
+        //impostiamo friends su un array vuoto
+        const friends = user.followings ? await User.find({ _id: { $in: user.followings } }) : [];
+        let friendList = [];
+        friends.map((friend) => {
+            const { _id, username, profilePicture } = friend;//estrae _id, username e profilePicture da friend.
+            friendList.push({ _id, username, profilePicture });//aggiungo nuovo oggetto con questi dati all'array
+        });
+        res.status(200).send({
+            message: "Amici recuperati con successo",
+            friendList
+        });
+    } catch (error) {
+        res.status(500).send({
+            error,
+            message: "Errore nel server",
+            statusCode: 500,
+        });
+    }
+});
+
+
 //follow utente
 router.put("/:id/follow", async (req, res) => {
     if (req.body.userId !== req.params.id) {
