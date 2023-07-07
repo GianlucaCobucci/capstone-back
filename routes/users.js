@@ -19,9 +19,7 @@ router.patch('/:id', async (req, res) => {
             }
         }
         try {
-            const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-                $set: req.body,
-            })
+            const user = await User.findByIdAndUpdate(req.params.id, req.body)
             res.status(200).send({
                 message: "l'tente è stato modificato con successo",
                 statusCode: 200,
@@ -143,8 +141,8 @@ router.put("/:id/follow", async (req, res) => {
             const user = await User.findById(req.params.id)
             const currentUser = await User.findById(req.body.userId)
             if (!user.followers.includes(req.body.userId)) {
-                await User.updateOne({ $push: { followers: req.body.userId } })
-                await currentUser.updateOne({ $push: { followings: req.params.id } })
+                await user.updateOne({ _id: req.params.id }, { $push: { followers: req.body.userId } });
+                await currentUser.updateOne({ _id: req.body.userId }, { $push: { followings: req.params.id } });
                 res.status(200).send({
                     message: "Bene, ora segui l'utente",
                     statusCode: 200,
@@ -177,8 +175,8 @@ router.put("/:id/unfollow", async (req, res) => {
             const user = await User.findById(req.params.id);
             const currentUser = await User.findById(req.body.userId);
             if (user.followers.includes(req.body.userId)) {
-                await user.updateOne({ $pull: { followers: req.body.userId } });
-                await currentUser.updateOne({ $pull: { followings: req.params.id } });
+                await user.updateOne({ _id: req.params.id }, { $pull: { followers: req.body.userId } });
+                await currentUser.updateOne({ _id: req.body.userId }, { $pull: { followings: req.params.id } });
                 res.status(200).send({
                     message: "L'utente non è più seguito",
                     statusCode: 200,
