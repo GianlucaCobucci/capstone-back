@@ -201,4 +201,23 @@ router.put("/:id/unfollow", async (req, res) => {
     }
 });
 
+router.get("/profile/:username", async (req, res) => {
+    try {
+        const user = await User.findOne({ username: req.params.username });
+        const userPosts = await Post.find({ userId: user._id });
+        res.status(200).send({
+            user,
+            posts: userPosts,
+            message: "Profilo utente trovato con successo",
+            statusCode: 200
+        });
+    } catch (error) {
+        res.status(500).send({
+            error,
+            message: "Errore nel server",
+            statusCode: 500
+        });
+    }
+});
+
 module.exports = router
