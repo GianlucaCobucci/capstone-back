@@ -36,21 +36,27 @@ router.post("/login", async (req, res) => {
     try {
         //trova utente se presente in database
         const user = await User.findOne({ email: req.body.email })
-        !user && res.status(404).send({
-            message: "Utente non trovato",
-            statusCode: 404
-        })
+        if (!user) {
+            return res.status(404).send({
+                message: "Utente non trovato",
+                statusCode: 404
+            })
+        }
         //verifica password
         const validPassword = await bcrypt.compare(req.body.password, user.password)
-        !validPassword && res.status(400).send({
-            message: "Password errata",
-            statusCode: 400
-        })
+        if (!validPassword) {
+            return res.status(400).send({
+                message: "Password errata",
+                statusCode: 400
+            })
+        }
+
         //salva utente e ritorna risposta
         res.status(200).send({
             message: "Login effettuato correttamente",
             statusCode: 200,
-            user
+            user,
+            token  // restituisce il token al client
         })
     } catch (error) {
         res.status(500).send({
@@ -60,5 +66,6 @@ router.post("/login", async (req, res) => {
 })
 
 module.exports = router
+
 
 
