@@ -56,7 +56,6 @@ router.post("/login", async (req, res) => {
             message: "Login effettuato correttamente",
             statusCode: 200,
             user,
-            token  // restituisce il token al client
         })
     } catch (error) {
         res.status(500).send({
