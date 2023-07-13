@@ -12,6 +12,9 @@ const path = require("path")
 const userRoute = require("./routes/users.js")
 const authRoute = require("./routes/auth.js")
 const postRoute = require("./routes/posts.js")
+const conversationRoute = require ("./routes/conversations.js")
+const messageRoute = require ("./routes/messages.js")
+
 
 app.use(cors());
 
@@ -60,10 +63,14 @@ db.once('open', () => {
   console.log('Server DB connesso correttamente');
 });
 
-
+//quando andiamo a questo url, andremo a userRoute, authRoute ecc..
 app.use("/api/users", userRoute)
 app.use("/api/auth", authRoute)
 app.use("/api/posts", postRoute)
+app.use("/api/conversations", conversationRoute)
+app.use("/api/messages", messageRoute)
+
+
 
 app.listen(PORT, () => {
   console.log(`Server avviato sulla porta ${PORT}`);
