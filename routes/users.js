@@ -138,20 +138,25 @@ router.get("/friends/:userId", async (req, res) => {
 router.put("/:id/follow", async (req, res) => {
     if (req.body.userId !== req.params.id) {
         try {
-            const user = await User.findById(req.params.id)
-            const currentUser = await User.findById(req.body.userId)
+            const user = await User.findById(req.params.id);
+            const currentUser = await User.findById(req.body.userId);
+
             if (!user.followers.includes(req.body.userId)) {
-                await user.updateOne({ _id: req.params.id }, { $push: { followers: req.body.userId } });
-                await currentUser.updateOne({ _id: req.body.userId }, { $push: { followings: req.params.id } });
+                user.followers.push(req.body.userId);
+                currentUser.followings.push(req.params.id);
+
+                await user.save();
+                await currentUser.save();
+
                 res.status(200).send({
                     message: "Bene, ora segui l'utente",
                     statusCode: 200,
-                })
+                });
             } else {
                 res.status(403).send({
                     message: "Già segui l'utente",
                     statusCode: 403
-                })
+                });
             }
         } catch (error) {
             res.status(500).send({
@@ -164,9 +169,12 @@ router.put("/:id/follow", async (req, res) => {
         res.status(403).send({
             message: "Non puoi seguire te stesso",
             statusCode: 403
-        })
+        });
     }
-})
+});
+
+
+
 
 //unfollow utente
 router.put("/:id/unfollow", async (req, res) => {
