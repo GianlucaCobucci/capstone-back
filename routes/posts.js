@@ -100,6 +100,26 @@ router.put("/:id/like", async (req, res) => {
     }
 })
 
+router.get("/profile/:username", async (req, res) => {
+    try {
+        const user = await User.findOne({ username: req.params.username });
+        const userPosts = await Post.find({ userId: user._id });
+        res.status(200).send({
+            statusCode: 200,
+            message: "Post trovati con successo",
+            userPosts,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({
+            error,
+            message: "Errore nel server",
+            statusCode: 500
+        });
+    }
+});
+
+
 //recupera un post
 router.get("/:id", async (req, res) => {
     try {
