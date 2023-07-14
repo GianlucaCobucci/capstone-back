@@ -42,4 +42,26 @@ router.get("/:userId", async (req,res)=>{
         })
     }
 })
+
+//get conversazione che include due utenti attivi
+router.get("/find/:firstUserId/:secondUserId", async (req, res)=>{
+    try {
+        const conversation = await Conversation.findOne({
+            members: {$all:[req.params.firstUserId, req.params.secondUserId]}
+
+        })
+        res.status(200).send({
+            message: "Conversazione con due utenti presa con successo",
+            conversation,
+            statusCode: 200
+        })
+    } catch (error) {
+        res.status(500).send({
+            message: "C'è un errore nel server",
+            statusCode: 500,
+            error
+        })
+    }
+})
+
 module.exports = router;
